@@ -19,6 +19,13 @@ def yolo_prediction(request: Request, body: YoloBody):
 
         results = request.app.state.ml_models["yolo"](image)[0]
         boxes = results.boxes.xywh.tolist()
+        
+        if results.probs:
+            labels = results.probs.top1.tolist()
+        else:
+            labels = [0 for _ in boxes]
+        
+        res = list(zip(labels, boxes))
 
         return res
     
